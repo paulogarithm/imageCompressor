@@ -35,6 +35,8 @@ ghc-options:
 
 library:
   source-dirs: src
+  dependencies:
+    - optparse-applicative
 
 executables:
   imageCompressor:
@@ -46,6 +48,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - ImageCompressor
+    - optparse-applicative
 
 tests:
   ImageCompressor-test:
