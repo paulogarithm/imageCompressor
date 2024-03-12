@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Bootstrap
+      Compressor
   other-modules:
       Paths_ImageCompressor
   autogen-modules:

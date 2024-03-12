@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Lib
+import Compressor(compressor)
 
 main :: IO ()
-main = someFunc
+main = compressor
