@@ -5,53 +5,28 @@
 -- GetConfArgs
 -}
 
--- module GetConfArgs (
---     defaultConf,
---     getOpts,
---     Conf(..)
--- ) where
+module GetConfArgs (
+    confCommandParser,
+    Conf(..)
+) where
 
-data Conf = Conf {  nbCluster :: Maybe Int,
-                    convergeLimit :: Maybe Double,
-                    fileName :: Maybe String
+import Options.Applicative
+
+data Conf = Conf {  nbCluster :: Int,
+                    convergeLimit :: Double,
+                    fileName :: String
                     } deriving (Show)
 
-isNbr :: [Char] -> Bool -> Bool
-isNbr [] _ = True
-isNbr ('-':list) True = isNbr list False
-isNbr ('-':_) False = False
-isNbr (x:list) _ | (x >= '0' && x <= '9') = True && isNbr list False
-    | otherwise = False
+clusterParser :: Parser Int
+clusterParser = option auto (short 'n')
 
-readInt :: [Char] -> Maybe Int
-readInt [] = Nothing
-readInt list
-    | (isNbr list True) == True = Just (read (list) :: Int)
-    | otherwise = Nothing
+convergeParser :: Parser Double
+convergeParser = option auto (short 'l')
 
-defaultConf :: Conf
-defaultConf = Conf {
-                    nbCluster=Nothing,
-                    convergeLimit=Nothing,
-                    fileName=Nothing
-                    }
+fileNameParser :: Parser String
+fileNameParser = strOption (short 'f')
 
-checkValue :: Maybe Int -> Bool
-checkValue Nothing = False
-checkValue (Just value)
-    | value < 0 = False
-    | otherwise = True
-
-getOpts :: Conf -> [String] -> Maybe Conf
-getOpts conf [] = (Just conf)
-getOpts (Conf Nothing convLimit file) ("-n":value:list)
-    | (checkValue $ readInt value) /= False =
-        getOpts (Conf (readInt value) convLimit file) list
-    | otherwise = Nothing
-getOpts (Conf nbCluster Nothing file) ("-l":value:list)
-    | (checkValue $ readInt value) /= False =
-        getOpts (Conf nbCluster (Just (read (value) :: Double)) file) list
-    | otherwise = Nothing
-getOpts (Conf nbCluster convLimit Nothing) ("-f":value:list) =
-        getOpts (Conf nbCluster convLimit (Just value)) list
-getOpts _ _ = Nothing
+confCommandParser :: ParserInfo Conf
+confCommandParser = info
+    (Conf <$> clusterParser <*> convergeParser <*> fileNameParser)
+    fullDesc
