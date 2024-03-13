@@ -1,3 +1,10 @@
+{-
+-- EPITECH PROJECT, 2024
+-- B-FUN-400-PAR-4-1-compressor-rahul.chander
+-- File description:
+-- Main
+-}
+
 module Main (main) where
 
 import Compressor(compressor)
