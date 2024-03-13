@@ -42,5 +42,5 @@ module OneDimension where
     clusterMeans t len = (clusterMeans t (len - 1))++[div (fst foo) (snd foo)]
         where foo = (clusterNTotal t (len - 1))
 
-    kmeans1D :: (Ord a) => (Num a) => [a] -> a -> [(a,Int)]
-    kmeans1D _ _ = []
+    -- kmeans1D :: (Ord a) => (Num a) => [a] -> a -> [(a,Int)]
+    -- kmeans1D _ _ = []
