@@ -19,32 +19,6 @@ import KMeansData.TrupleData
 import KMeansAlgorithm
 import Options.Applicative
 
--- testData :: [Int]
--- testData = [1, 2, 5678, 990, 90, 1000, 67, 25, 12, 45]
-
--- position :: Int -> [Int] -> Int
--- position x xs =
---     case x `elemIndex` xs of
---         Just n  -> n
---         Nothing -> 0
-
--- myFurthest :: [Int] -> Int -> Int
--- myFurthest xs x = xs !! position (maximum l) l
---     where
---         l = map (\val -> (val - x) * ((val - x))) xs
-
--- getCentroids :: [Int] -> Int -> Int -> [Int]
--- getCentroids _ centroid 0 = centroid : []
--- getCentroids list centroid nbCluster =
---     centroid : (getCentroids newList (myFurthest newList (nbCluster - 1)) (nbCluster - 1))
---     where
---         newList = (filter (\x -> x /= centroid) list)
-
--- getFirstCentroid :: [Int] -> Int -> IO (Int)
--- getFirstCentroid list nbCluster =
---     (randomRIO (1, (length list) - 1)) >>= (\idx ->
---         return (list !! idx))
-
 b :: [Truple]
 b = [
     (Truple 1.1 2.2 3.3),
