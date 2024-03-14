@@ -25,12 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      Bootstrap
       Compressor
+      GetCentroids
+      GetDistance
       KMeansAlgorithm
       KMeansData.GetConfArgs
       KMeansData.TrupleData
-      OneDimension
   other-modules:
       Paths_ImageCompressor
   autogen-modules:

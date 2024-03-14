@@ -45,6 +45,16 @@ import Options.Applicative
 --     (randomRIO (1, (length list) - 1)) >>= (\idx ->
 --         return (list !! idx))
 
+b :: [Truple]
+b = [
+    (Truple 1.1 2.2 3.3),
+    (Truple 9.1 2.2 45.3),
+    (Truple 18.1 29.2 22.3),
+    (Truple 38.1 0.2 34.3),
+    (Truple 20.1 15.2 35.3),
+    (Truple 12.1 20.2 15.0),
+    (Truple 5.0 4.0 3.0)]
+
 handleConf :: Conf -> IO ()
 handleConf (Conf nbCluster convergeLimit fileName)
     | nbCluster <= 0 = exitWith (ExitFailure 84)
