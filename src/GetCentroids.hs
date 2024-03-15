@@ -10,15 +10,13 @@ module GetCentroids (
 ) where
 
 import KMeansData.TrupleData
-import KMeansData.GetConfArgs
 import GetDistance
 
 import System.Random
 
-getFirstCentroid :: [Truple] -> IO (Truple)
-getFirstCentroid list =
-    (randomRIO (1, (length list) - 1)) >>= (\idx ->
-        return (list !! idx))
+getFirstCentroid :: [Truple] -> IO Truple
+getFirstCentroid list = (randomRIO (1, (length list) - 1))
+    >>= return . (\idx -> (list !! idx))
 
 getCentroids :: Truple -> [Truple] -> Int -> [Truple]
 getCentroids _ _ 0 = []
@@ -28,7 +26,6 @@ getCentroids centroid list nbCluster =
         newList = (filter (\x -> x /= centroid) list)
         newCluster = (nbCluster - 1)
 
-initCentroids :: [Truple] -> Int -> IO ([Truple])
-initCentroids list nbCluster =
-    (getFirstCentroid list) >>= (\centroid ->
-        return (getCentroids centroid list (nbCluster)))
+initCentroids :: [Truple] -> Int -> IO [Truple]
+initCentroids l n = (getFirstCentroid l) >>= return . (\c ->
+    getCentroids c l (n))

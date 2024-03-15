@@ -11,13 +11,12 @@ module Main (main) where
 
 import System.Environment
 import System.Exit
-import System.Random
-import Data.List (elemIndex)
 
 import KMeansData.GetConfArgs
 import KMeansData.TrupleData
 import KMeansAlgorithm
 import Options.Applicative
+import GetCentroids
 
 b :: [Truple]
 b = [
@@ -29,11 +28,16 @@ b = [
     (Truple 12.1 20.2 15.0),
     (Truple 5.0 4.0 3.0)]
 
+resultAlgo :: [Truple] -> IO()
+resultAlgo c = case manageAlgo b c 0 of
+    Just _ -> exitSuccess
+    Nothing -> exitWith (ExitFailure 84)
+
 handleConf :: Conf -> IO ()
-handleConf (Conf nbCluster convergeLimit fileName)
-    | nbCluster <= 0 = exitWith (ExitFailure 84)
-    | convergeLimit <= 0 = exitWith (ExitFailure 84)
-    | otherwise = manageAlgo b (Conf nbCluster convergeLimit fileName)
+handleConf (Conf confClusters confConvlimit _)
+    | confClusters <= 0 = exitWith (ExitFailure 84)
+    | confConvlimit <= 0 = exitWith (ExitFailure 84)
+    | otherwise = (initCentroids b confClusters) >>= resultAlgo
 
 main :: IO ()
 main = do
@@ -43,11 +47,3 @@ main = do
         Failure _ -> exitWith (ExitFailure 84)
         CompletionInvoked _ -> exitWith (ExitFailure 84)
 
-displayDouble :: Double -> IO()
-displayDouble n = print n
-
-displayConf :: Conf -> IO()
-displayConf (Conf nbCluster convergeLimit fileName) =
-    print nbCluster >>
-        displayDouble convergeLimit >>
-            putStrLn fileName
