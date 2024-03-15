@@ -6,7 +6,8 @@
 -}
 
 module KMeansAlgorithm (
-    manageAlgo
+    manageAlgo,
+    checkConvergenceLimit
 ) where
 
 import KMeansData.TrupleData
@@ -42,11 +43,20 @@ add n (a, b) = (a + n, b)
 -- clusterMeans t len = (clusterMeans t (len - 1)) ++ [div (fst foo) (snd foo)]
 --     where foo = (clusterNTotal t (len - 1))
 
-handleKMeans :: [Truple] -> [Truple] -> IO ()
-handleKMeans list centroids =
+checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
+checkConvergenceLimit [] _ _ = True
+checkConvergenceLimit _ [] _ = True
+checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
+    (convergeDistance <= limit) && (checkConvergenceLimit list1 list2 limit)
+    where
+        convergeDistance = (distance newCentroid centroid)
+
+handleKMeans :: [Truple] -> [Truple] -> Bool -> IO ()
+handleKMeans _ _ True = return ()
+handleKMeans list centroids False =
     print (assignCluster list centroids)
 
 manageAlgo :: [Truple] -> Conf -> IO ()
 manageAlgo list (Conf nbCluster _ _) =
     (initCentroids list nbCluster) >>= (\centroids ->
-        handleKMeans list centroids)
+        handleKMeans list centroids False)
