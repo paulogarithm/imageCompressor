@@ -25,9 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      Bootstrap
       Compressor
-      GetConfArgs
+      GetCentroids
+      GetDistance
+      KMeansAlgorithm
+      KMeansData.GetConfArgs
+      KMeansData.TrupleData
   other-modules:
       Paths_ImageCompressor
   autogen-modules:
@@ -38,6 +41,7 @@ library
   build-depends:
       base >=4.7 && <5
     , optparse-applicative
+    , random
   default-language: Haskell2010
 
 executable imageCompressor
@@ -53,6 +57,7 @@ executable imageCompressor
       ImageCompressor
     , base >=4.7 && <5
     , optparse-applicative
+    , random
   default-language: Haskell2010
 
 test-suite ImageCompressor-test

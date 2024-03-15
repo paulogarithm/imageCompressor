@@ -5,7 +5,7 @@
 -- GetConfArgs
 -}
 
-module GetConfArgs (
+module KMeansData.GetConfArgs (
     confCommandParser,
     Conf(..)
 ) where
