@@ -9,7 +9,6 @@ NAME	=	imageCompressor
 
 STACK_BUILD	=	stack build
 STACK_PATH	=	stack path
-RM	=	rm -rf
 
 BIN_PATH	:=	$(shell $(STACK_PATH) --local-install-root)
 
@@ -20,11 +19,9 @@ $(NAME):
 	cp $(BIN_PATH)/bin/$(NAME) .
 
 clean:
-	$(RM) *.hi
-	$(RM) *.o
+	stack purge
 
 fclean: clean
 	$(RM) $(NAME)
-	stack clean --full
 
 re:	fclean all
