@@ -16,15 +16,19 @@ module GetDistance (
 import Data.List (elemIndex)
 import KMeansData.TrupleData
 
-a :: [Truple]
-a = [(Truple 1356.1 2234.2 3131.3), (Truple 1.1 2.2 3.3)]
-
 getDistances :: [Truple] -> Truple -> [Float]
 getDistances [] _ = []
 getDistances (x:xs) what = (distance x what) : (getDistances xs what)
 
+-- distance :: Truple -> Truple -> Float
+-- distance (Truple r1 g1 b1) (Truple r2 g2 b2) =
+--     sqrt ((r * r) + (g * g) + (b * b))
+--     where   r = r1 - r2
+--             g = g1 - g2
+--             b = b1 - b2
+
 distance :: Truple -> Truple -> Float
-distance (Truple r1 g1 b1) (Truple r2 g2 b2) =
+distance (r1,g1,b1) (r2,g2,b2) =
     sqrt ((r * r) + (g * g) + (b * b))
     where   r = r1 - r2
             g = g1 - g2

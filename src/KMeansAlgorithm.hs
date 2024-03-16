@@ -56,6 +56,6 @@ handleKMeans :: [Truple] -> [Truple] -> Bool -> [(Truple,Int)]
 handleKMeans _ _ True = []
 handleKMeans list centroids False = assignCluster list centroids
 
--- Args: (valeurs) -> (centroids) -> (convergence)
+-- Args: (valeurs) -> (centroids) -> (convergence) => [Truple,[Truple]]
 manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe [(Truple,Int)]
 manageAlgo l c _ = Just (handleKMeans l c False)

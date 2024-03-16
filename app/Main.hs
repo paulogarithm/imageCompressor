@@ -18,24 +18,35 @@ import KMeansAlgorithm
 import Options.Applicative
 import GetCentroids
 
+-- b :: [Truple]
+-- b = [
+--     (Truple 1.1 2.2 3.3),
+--     (Truple 9.1 2.2 45.3),
+--     (Truple 18.1 29.2 22.3),
+--     (Truple 38.1 0.2 34.3),
+--     (Truple 20.1 15.2 35.3),
+--     (Truple 12.1 20.2 15.0),
+--     (Truple 5.0 4.0 3.0)]
+
 b :: [Truple]
 b = [
-    (Truple 1.1 2.2 3.3),
-    (Truple 9.1 2.2 45.3),
-    (Truple 18.1 29.2 22.3),
-    (Truple 38.1 0.2 34.3),
-    (Truple 20.1 15.2 35.3),
-    (Truple 12.1 20.2 15.0),
-    (Truple 5.0 4.0 3.0)]
+    (1,2,3),
+    (9,2,45),
+    (18.1,29.2,22.3),
+    (38.1,0.2,34.3),
+    (20.1,15.2,35.3),
+    (12.1,20.2,15.0),
+    (5.0,4.0,3.0)]
 
 resultAlgo :: [Truple] -> IO()
-resultAlgo c = case manageAlgo b c 0 of
-    Just _ -> exitSuccess
-    Nothing -> exitWith (ExitFailure 84)
+resultAlgo c = case foo of
+        Just x -> print c >> print x >> exitSuccess
+        Nothing -> exitWith (ExitFailure 84)
+        where foo = manageAlgo b c 0
 
 handleConf :: Conf -> IO ()
 handleConf (Conf confClusters confConvlimit _)
-    | confClusters <= 0 = exitWith (ExitFailure 84)
+    | confClusters <= 0 || confClusters >= length b = exitWith (ExitFailure 84)
     | confConvlimit <= 0 = exitWith (ExitFailure 84)
     | otherwise = (initCentroids b confClusters) >>= resultAlgo
 

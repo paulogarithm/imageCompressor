@@ -11,4 +11,5 @@ module KMeansData.TrupleData (
     Truple(..)
 ) where
 
-data Truple = Truple Float Float Float deriving (Show, Ord, Eq)
+-- data Truple = Truple Float Float Float deriving (Show, Ord, Eq)
+type Truple = (Float,Float,Float)
