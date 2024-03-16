@@ -47,12 +47,17 @@ displayResult ((k,v):xs) = return ()
     >> print v
     >> displayResult xs
 
+displayAverage :: Group -> IO()
+displayAverage x = print $ getGroupAverage x
+
 resultAlgo :: [Truple] -> IO()
 resultAlgo c = case foo of
         Just x -> return ()
             >> putStr "starter centroids: "
             >> print c
             >> displayResult x
+            >> putStr "new centroids: "
+            >> displayAverage x
             >> exitSuccess
         Nothing -> exitWith (ExitFailure 84)
         where foo = manageAlgo b c 0

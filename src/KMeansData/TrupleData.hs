@@ -8,8 +8,29 @@
 {-- Here we can put the data with the Parser ! --}
 
 module KMeansData.TrupleData (
-    Truple(..)
+    Truple(..),
+    addTruple,
+    trupleTotal,
+    tra,
+    trb,
+    trc
 ) where
+
+addTruple :: Truple -> Truple -> Truple
+addTruple (a,b,c) (d,e,f) = (a+d,b+e,c+f)
+
+trupleTotal :: [Truple] -> Truple
+trupleTotal [] = (0,0,0)
+trupleTotal (tr:xs) = addTruple tr (trupleTotal xs)
+
+tra :: Truple -> Float
+tra (a,_,_) = a
+
+trb :: Truple -> Float
+trb (_,b,_) = b
+
+trc :: Truple -> Float
+trc (_,_,c) = c
 
 -- data Truple = Truple Float Float Float deriving (Show, Ord, Eq)
 type Truple = (Float,Float,Float)

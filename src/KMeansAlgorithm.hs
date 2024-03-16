@@ -8,7 +8,8 @@
 module KMeansAlgorithm (
     manageAlgo,
     setGroup,
-    Group
+    getGroupAverage,
+    Group,
 ) where
 
 import KMeansData.TrupleData
@@ -45,6 +46,11 @@ add n (a, b) = (a + n, b)
 -- clusterMeans t len = (clusterMeans t (len - 1)) ++ [div (fst foo) (snd foo)]
 --     where foo = (clusterNTotal t (len - 1))
 
+trupleAverage :: [Truple] -> Truple
+trupleAverage t = ((tra total)/len, (tra total)/len, (trc total)/len)
+    where   total = trupleTotal t
+            len = fromIntegral $ length t
+
 checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
 checkConvergenceLimit [] _ _ = True
 checkConvergenceLimit _ [] _ = True
@@ -66,6 +72,10 @@ setGroup :: [(Truple,Int)] -> [Truple] -> Group
 setGroup [] cen = initGrouping cen
 setGroup ((what,index):xs) cen = pushInGroup object (cen!!index) what
     where object = setGroup xs cen
+
+getGroupAverage :: Group -> [Truple]
+getGroupAverage [] = []
+getGroupAverage ((_,t):xs) = (trupleAverage t):(getGroupAverage xs)
 
 -- Args: (valeurs) -> (centroids) -> (convergence) => [Truple,[Truple]]
 manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
