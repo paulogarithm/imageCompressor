@@ -38,9 +38,22 @@ b = [
     (12.1,20.2,15.0),
     (5.0,4.0,3.0)]
 
+displayResult :: Group -> IO()
+displayResult [] = return ()
+displayResult ((k,v):xs) = return ()
+    >> putStr "key: "
+    >> print k
+    >> putStr "values: "
+    >> print v
+    >> displayResult xs
+
 resultAlgo :: [Truple] -> IO()
 resultAlgo c = case foo of
-        Just x -> print c >> print x >> exitSuccess
+        Just x -> return ()
+            >> putStr "starter centroids: "
+            >> print c
+            >> displayResult x
+            >> exitSuccess
         Nothing -> exitWith (ExitFailure 84)
         where foo = manageAlgo b c 0
 

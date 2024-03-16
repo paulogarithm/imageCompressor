@@ -7,14 +7,16 @@
 
 module KMeansAlgorithm (
     manageAlgo,
-    handleKMeans
+    setGroup,
+    Group
 ) where
 
 import KMeansData.TrupleData
 import KMeansData.GetConfArgs
 import GetDistance
-
 import GetCentroids
+
+type Group = [(Truple,[Truple])]
 
 assignCluster :: [Truple] -> [Truple] -> [(Truple, Int)]
 assignCluster [] _ = []
@@ -51,11 +53,20 @@ checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
     where
         convergeDistance = (distance newCentroid centroid)
 
--- Args: (valeurs) -> (centroids) -> (isConverged)
-handleKMeans :: [Truple] -> [Truple] -> Bool -> [(Truple,Int)]
-handleKMeans _ _ True = []
-handleKMeans list centroids False = assignCluster list centroids
+initGrouping :: [Truple] -> Group
+initGrouping [] = []
+initGrouping (x:xs) = (x,[]):(initGrouping xs)
+
+pushInGroup :: Group -> Truple -> Truple -> Group
+pushInGroup [] _ _ = []
+pushInGroup ((pk,t):xs) k v | (k == pk) = ((pk,v:t):xs)
+                            | otherwise = ((pk,t):(pushInGroup xs k v))
+
+setGroup :: [(Truple,Int)] -> [Truple] -> Group
+setGroup [] cen = initGrouping cen
+setGroup ((what,index):xs) cen = pushInGroup object (cen!!index) what
+    where object = setGroup xs cen
 
 -- Args: (valeurs) -> (centroids) -> (convergence) => [Truple,[Truple]]
-manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe [(Truple,Int)]
-manageAlgo l c _ = Just (handleKMeans l c False)
+manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
+manageAlgo list cen _ = Just (setGroup (assignCluster list cen) cen)
