@@ -44,10 +44,10 @@ add n (a, b) = (a + n, b)
 --     where foo = (clusterNTotal t (len - 1))
 
 checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
-checkConvergenceLimit [] _ _ = False
-checkConvergenceLimit _ [] _ = False
+checkConvergenceLimit [] _ _ = True
+checkConvergenceLimit _ [] _ = True
 checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
-    (convergeDistance <= limit) || (checkConvergenceLimit list1 list2 limit)
+    (convergeDistance <= limit) && (checkConvergenceLimit list1 list2 limit)
     where
         convergeDistance = (distance newCentroid centroid)
 
