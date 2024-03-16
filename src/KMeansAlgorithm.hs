@@ -7,7 +7,7 @@
 
 module KMeansAlgorithm (
     manageAlgo,
-    setGroup,
+    getConvergence,
     getGroupAverage,
     Group,
 ) where
@@ -59,6 +59,14 @@ checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
     where
         convergeDistance = (distance newCentroid centroid)
 
+getOverallDistance :: [Truple] -> [Truple] -> Float
+getOverallDistance [] _ = 0
+getOverallDistance _ [] = 0
+getOverallDistance (a:as) (b:bs) = (distance a b) + (getOverallDistance as bs)
+
+getConvergence :: Float -> Float -> Float
+getConvergence a b = abs (a - b)
+
 initGrouping :: [Truple] -> Group
 initGrouping [] = []
 initGrouping (x:xs) = (x,[]):(initGrouping xs)
@@ -77,6 +85,6 @@ getGroupAverage :: Group -> [Truple]
 getGroupAverage [] = []
 getGroupAverage ((_,t):xs) = (trupleAverage t):(getGroupAverage xs)
 
--- Args: (valeurs) -> (centroids) -> (convergence) => [Truple,[Truple]]
+-- Args: (valeurs) -> (centroids) -> (previousConvergence) => [Truple,[Truple]]
 manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
 manageAlgo list cen _ = Just (setGroup (assignCluster list cen) cen)
