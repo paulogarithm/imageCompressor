@@ -8,7 +8,7 @@
 {-- Here we can put the data with the Parser ! --}
 
 module KMeansData.TrupleData (
-    Truple(..),
+    Truple,
     addTruple,
     trupleTotal,
     tra,
