@@ -38,35 +38,11 @@ b = [
     (12.1,20.2,15.0),
     (5.0,4.0,3.0)]
 
-displayResult :: Group -> IO()
-displayResult [] = return ()
-displayResult ((k,v):xs) = return ()
-    >> putStr "key: "
-    >> print k
-    >> putStr "values: "
-    >> print v
-    >> displayResult xs
-
-displayAverage :: Group -> IO()
-displayAverage x = print $ getGroupAverage x
-
-resultAlgo :: [Truple] -> IO()
-resultAlgo c = case foo of
-        Just x -> return ()
-            >> putStr "starter centroids: "
-            >> print c
-            >> displayResult x
-            >> putStr "new centroids: "
-            >> displayAverage x
-            >> exitSuccess
-        Nothing -> exitWith (ExitFailure 84)
-        where foo = manageAlgo b c 0
-
 handleConf :: Conf -> IO ()
-handleConf (Conf confClusters confConvlimit _)
-    | confClusters <= 0 || confClusters >= length b = exitWith (ExitFailure 84)
-    | confConvlimit <= 0 = exitWith (ExitFailure 84)
-    | otherwise = (initCentroids b confClusters) >>= resultAlgo
+handleConf (Conf cClusters cConvLimit _)
+    | cClusters <= 0 || cClusters >= length b = exitWith (ExitFailure 84)
+    | cConvLimit <= 0 = exitWith (ExitFailure 84)
+    | otherwise = (initCentroids b cClusters) >>= (\v -> executeKMeans v b 20)
 
 main :: IO ()
 main = do

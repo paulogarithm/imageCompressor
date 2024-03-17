@@ -5,17 +5,13 @@
 -- KMeansAlgorithm
 -}
 
-module KMeansAlgorithm (
-    manageAlgo,
-    getConvergence,
-    getGroupAverage,
-    Group,
-) where
+module KMeansAlgorithm (executeKMeans) where
 
 import KMeansData.TrupleData
 import KMeansData.GetConfArgs
 import GetDistance
 import GetCentroids
+import System.Exit
 
 type Group = [(Truple,[Truple])]
 
@@ -81,10 +77,37 @@ setGroup [] cen = initGrouping cen
 setGroup ((what,index):xs) cen = pushInGroup object (cen!!index) what
     where object = setGroup xs cen
 
-getGroupAverage :: Group -> [Truple]
-getGroupAverage [] = []
-getGroupAverage ((_,t):xs) = (trupleAverage t):(getGroupAverage xs)
+getNewCentroids :: Group -> [Truple]
+getNewCentroids [] = []
+getNewCentroids ((_,t):xs) = (trupleAverage t):(getNewCentroids xs)
 
 -- Args: (valeurs) -> (centroids) -> (previousConvergence) => [Truple,[Truple]]
 manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
-manageAlgo list cen _ = Just (setGroup (assignCluster list cen) cen)
+manageAlgo list cen con = Just (setGroup (assignCluster list cen) cen)
+
+displayResult :: Group -> IO()
+displayResult [] = return ()
+displayResult ((k,v):xs) = return ()
+    >> putStr "key: "
+    >> print k
+    >> putStr "values: "
+    >> print v
+    >> displayResult xs
+
+displayNewCentroids :: Group -> IO()
+displayNewCentroids x = putStr "new centroids: " >> print (getNewCentroids x)
+
+executeKMeans :: [Truple] -> [Truple] -> Int -> IO()
+executeKMeans cen values n = case result of
+    Just group -> return ()
+        >> putStr "starter centroids: " >> print cen
+        >> displayResult group
+        >> displayNewCentroids group
+        >> newGeneration
+        where newGeneration
+                | n <= 0 = exitSuccess
+                | cen == newCen = exitSuccess
+                | otherwise = executeKMeans newCen values (n - 1)
+                where newCen = getNewCentroids group
+    Nothing -> exitWith (ExitFailure 84)
+    where result = manageAlgo values cen 0
