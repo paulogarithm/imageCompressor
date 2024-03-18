@@ -45,13 +45,13 @@ trupleAverage t = ((tra total)/len, (tra total)/len, (trc total)/len)
     where   total = trupleTotal t
             len = fromIntegral $ length t
 
--- checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
--- checkConvergenceLimit [] _ _ = True
--- checkConvergenceLimit _ [] _ = True
--- checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
---     (convergeDistance <= limit) && (checkConvergenceLimit list1 list2 limit)
---     where
---         convergeDistance = (distance newCentroid centroid)
+checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
+checkConvergenceLimit [] _ _ = True
+checkConvergenceLimit _ [] _ = True
+checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
+    (convergeDistance <= limit) && (checkConvergenceLimit list1 list2 limit)
+    where
+        convergeDistance = (distance newCentroid centroid)
 
 -- getOverallDistance :: [Truple] -> [Truple] -> Float
 -- getOverallDistance [] _ = 0
@@ -80,6 +80,7 @@ getNewCentroids [] = []
 getNewCentroids ((_,t):xs) = (trupleAverage t):(getNewCentroids xs)
 
 -- Args: (valeurs) -> (centroids) -> (previousConvergence) => [Truple,[Truple]]
+-- Optimisable
 manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
 manageAlgo list cen _ = Just (setGroup (assignCluster list cen) cen)
 
@@ -95,17 +96,18 @@ displayResult ((k,v):xs) = return ()
 displayNewCentroids :: Group -> IO()
 displayNewCentroids x = putStr "new centroids: " >> print (getNewCentroids x)
 
-executeKMeans :: [Truple] -> [Truple] -> Int -> IO()
-executeKMeans cen values n = case result of
+executeKMeans :: [Truple] -> [Truple] -> Int -> Float -> IO()
+executeKMeans cen values n l = case result of
     Just group -> return ()
         >> putStr "starter centroids: " >> print cen
         >> displayResult group
         >> displayNewCentroids group
         >> newGeneration
         where newGeneration
+                | (checkConvergenceLimit cen newCen l) = exitSuccess
                 | n <= 0 = exitSuccess
                 | cen == newCen = exitSuccess
-                | otherwise = executeKMeans newCen values (n - 1)
+                | otherwise = executeKMeans newCen values (n - 1) l
                 where newCen = getNewCentroids group
     Nothing -> exitWith (ExitFailure 84)
     where result = manageAlgo values cen 0

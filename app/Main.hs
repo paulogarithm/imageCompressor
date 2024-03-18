@@ -42,7 +42,7 @@ handleConf :: Conf -> IO ()
 handleConf (Conf cClusters cConvLimit _)
     | cClusters <= 0 || cClusters >= length b = exitWith (ExitFailure 84)
     | cConvLimit <= 0 = exitWith (ExitFailure 84)
-    | otherwise = (initCentroids b cClusters) >>= (\v -> executeKMeans v b 20)
+    | otherwise = (initCentroids b cClusters) >>= (\v -> executeKMeans v b 20 cConvLimit)
 
 main :: IO ()
 main = do

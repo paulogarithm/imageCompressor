@@ -13,14 +13,14 @@ module KMeansData.GetConfArgs (
 import Options.Applicative
 
 data Conf = Conf {  nbCluster :: Int,
-                    convergeLimit :: Double,
+                    convergeLimit :: Float,
                     fileName :: String
                     } deriving (Show)
 
 clusterParser :: Parser Int
 clusterParser = option auto (short 'n')
 
-convergeParser :: Parser Double
+convergeParser :: Parser Float
 convergeParser = option auto (short 'l')
 
 fileNameParser :: Parser String
