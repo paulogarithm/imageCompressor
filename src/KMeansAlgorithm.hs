@@ -17,31 +17,9 @@ assignCluster :: [Truple] -> [Truple] -> [(Truple, Int)]
 assignCluster [] _ = []
 assignCluster (x:xs) t = (x, (position (closest t x) t)) : (assignCluster xs t)
 
--- showMePos :: (Ord a) => (Num a) => [(a,Int)] -> [Int]
--- showMePos [] = []
--- showMePos ((_,x):xs) = x : (showMePos xs)
-
--- add :: (Num a) => a -> (a, b) -> (a, b)
--- add n (a, b) = (a + n, b)
-
--- _clusterNTotal :: (Integral a) => [(a,Int)] -> Int -> a -> (a,a) -- ???
--- _clusterNTotal [] cl nn = (0,nn)
--- _clusterNTotal ((x,c):xs) cl nn
---     | (c == cl) = add x (next (nn + 1))
---     | otherwise = next nn 
---         where
---             next n = _clusterNTotal xs cl n
-
--- clusterNTotal :: [(Truple, Int)] -> Int -> (Truple, a) -- ???
--- clusterNTotal a b = _clusterNTotal a b 0
-
--- clusterMeans :: [(Truple, Int)] -> Int -> [Truple]
--- clusterMeans _ 0 = []
--- clusterMeans t len = (clusterMeans t (len - 1)) ++ [div (fst foo) (snd foo)]
---     where foo = (clusterNTotal t (len - 1))
-
-trupleAverage :: [Truple] -> Truple
-trupleAverage t = ((tra total)/len, (tra total)/len, (trc total)/len)
+trupleAverage :: [Truple] -> Truple -> Truple
+trupleAverage [] what = what
+trupleAverage t _ = ((tra total)/len, (tra total)/len, (trc total)/len)
     where   total = trupleTotal t
             len = fromIntegral $ length t
 
@@ -77,7 +55,7 @@ setGroup ((what,index):xs) cen = pushInGroup object (cen!!index) what
 
 getNewCentroids :: Group -> [Truple]
 getNewCentroids [] = []
-getNewCentroids ((_,t):xs) = (trupleAverage t):(getNewCentroids xs)
+getNewCentroids ((w,t):xs) = (trupleAverage t w):(getNewCentroids xs)
 
 -- Args: (valeurs) -> (centroids) -> (previousConvergence) => [Truple,[Truple]]
 -- Optimisable
@@ -88,20 +66,17 @@ displayResult :: Group -> IO()
 displayResult [] = return ()
 displayResult ((k,v):xs) = return ()
     >> putStr "key: "
-    >> print k
+    >> print (trupleInt k)
     >> putStr "values: "
     >> print v
     >> displayResult xs
-
-displayNewCentroids :: Group -> IO()
-displayNewCentroids x = putStr "new centroids: " >> print (getNewCentroids x)
 
 executeKMeans :: [Truple] -> [Truple] -> Int -> Float -> IO()
 executeKMeans cen values n l = case result of
     Just group -> return ()
         >> putStr "starter centroids: " >> print cen
         >> displayResult group
-        >> displayNewCentroids group
+        >> putStr "new centroids: " >> print (getNewCentroids group)
         >> newGeneration
         where newGeneration
                 | (checkConvergenceLimit cen newCen l) = exitSuccess

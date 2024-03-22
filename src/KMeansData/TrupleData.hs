@@ -11,6 +11,7 @@ module KMeansData.TrupleData (
     Truple,
     addTruple,
     trupleTotal,
+    trupleInt,
     tra,
     trb,
     trc
@@ -22,6 +23,9 @@ addTruple (a,b,c) (d,e,f) = (a+d,b+e,c+f)
 trupleTotal :: [Truple] -> Truple
 trupleTotal [] = (0,0,0)
 trupleTotal (tr:xs) = addTruple tr (trupleTotal xs)
+
+trupleInt :: Truple -> (Int,Int,Int)
+trupleInt (a,b,c) = (round a,round b,round c)
 
 tra :: Truple -> Float
 tra (a,_,_) = a
