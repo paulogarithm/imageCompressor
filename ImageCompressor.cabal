@@ -32,6 +32,7 @@ library
       KMeansAlgorithm
       KMeansData.GetConfArgs
       KMeansData.TrupleData
+      Parsing
   other-modules:
       Paths_ImageCompressor
   autogen-modules:
