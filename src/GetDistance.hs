@@ -20,13 +20,6 @@ getDistances :: [Truple] -> Truple -> [Float]
 getDistances [] _ = []
 getDistances (x:xs) what = (distance x what) : (getDistances xs what)
 
--- distance :: Truple -> Truple -> Float
--- distance (Truple r1 g1 b1) (Truple r2 g2 b2) =
---     sqrt ((r * r) + (g * g) + (b * b))
---     where   r = r1 - r2
---             g = g1 - g2
---             b = b1 - b2
-
 distance :: Truple -> Truple -> Float
 distance (r1,g1,b1) (r2,g2,b2) =
     sqrt ((r * r) + (g * g) + (b * b))

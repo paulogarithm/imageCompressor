@@ -11,11 +11,6 @@ module DisplayOutput (
 
 import KMeansData.TrupleData
 
--- c :: [(Truple, [Truple])]
--- c = [
-    -- ((Truple 1 2 3), [(Truple 2 3 4), (Truple 5 678 13), (Truple 88 8 3), (Truple 0 7 1)]),
-    -- ((Truple 4 5 3), [(Truple 1 23 44), (Truple 45 1678 213), (Truple 883 812 33), (Truple 110 227 133)])]
-
 _displayCentroids :: Truple -> IO ()
 _displayCentroids truple =
     (putStrLn "--") >>

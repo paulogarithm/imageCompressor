@@ -31,14 +31,6 @@ checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
     where
         convergeDistance = (distance newCentroid centroid)
 
--- getOverallDistance :: [Truple] -> [Truple] -> Float
--- getOverallDistance [] _ = 0
--- getOverallDistance _ [] = 0
--- getOverallDistance (a:as) (b:bs) = (distance a b) + (getOverallDistance as bs)
-
--- getConvergence :: Float -> Float -> Float
--- getConvergence a b = abs (a - b)
-
 initGrouping :: [Truple] -> Group
 initGrouping [] = []
 initGrouping (x:xs) = (x,[]):(initGrouping xs)
