@@ -22,10 +22,10 @@ getDistances (x:xs) what = (distance x what) : (getDistances xs what)
 
 distance :: Truple -> Truple -> Float
 distance (r1,g1,b1) (r2,g2,b2) =
-    sqrt ((r * r) + (g * g) + (b * b))
-    where   r = r1 - r2
-            g = g1 - g2
-            b = b1 - b2
+    sqrt $ fromIntegral $ (r*r) + (g*g) + (b*b)
+    where   r = (r1 - r2)
+            g = (g1 - g2)
+            b = (b1 - b2)
 
 position :: Eq a => a -> [a] -> Int
 position x xs = case elemIndex x xs of

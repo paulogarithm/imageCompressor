@@ -19,9 +19,10 @@ assignCluster (x:xs) t = (x, (position (closest t x) t)) : (assignCluster xs t)
 
 trupleAverage :: [Truple] -> Truple -> Truple
 trupleAverage [] what = what
-trupleAverage t _ = ((tra total)/len, (tra total)/len, (trc total)/len)
+trupleAverage t _ =
+    ((tra total)`div`len, (tra total)`div`len, (tra total)`div`len)
     where   total = trupleTotal t
-            len = fromIntegral $ length t
+            len = length t
 
 checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
 checkConvergenceLimit [] _ _ = True
@@ -58,7 +59,7 @@ displayResult :: Group -> IO()
 displayResult [] = return ()
 displayResult ((k,v):xs) = return ()
     >> putStr "key: "
-    >> print (trupleInt k)
+    >> print k
     >> putStr "values: "
     >> print v
     >> displayResult xs
