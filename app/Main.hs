@@ -17,6 +17,7 @@ import KMeansData.TrupleData
 import KMeansAlgorithm
 import Options.Applicative
 import GetCentroids
+import Parsing(getImageParsing,Info)
 
 b :: [Truple]
 b = [
@@ -30,18 +31,27 @@ b = [
     (66,20,26),
     (15,89,40)]
 
+exitError :: IO()
+exitError = exitWith (ExitFailure 84)
+
+startKMeans :: Conf -> [Info] -> IO()
+startKMeans (Conf cClusters cConvLimit _) infos =
+    (initCentroids infos cClusters) >>= (\cen ->
+        executeKMeans cen infos cConvLimit)
+
 handleConf :: Conf -> IO ()
-handleConf (Conf cClusters cConvLimit _)
-    | cClusters <= 0 || cClusters >= length b = exitWith (ExitFailure 84)
-    | cConvLimit <= 0 = exitWith (ExitFailure 84)
-    | otherwise = (initCentroids b cClusters) >>=
-        (\v -> executeKMeans v b cConvLimit)
+handleConf (Conf cClusters cConvLimit cFile)
+    | cClusters <= 0 || cClusters >= length b = exitError
+    | cConvLimit <= 0 = exitError
+    | otherwise = getImageParsing cFile >>= (\pars -> case pars of
+        Just res -> startKMeans (Conf cClusters cConvLimit cFile) res
+        Nothing -> exitError)
 
 main :: IO ()
 main = do
     args <- getArgs
     case (execParserPure defaultPrefs confCommandParser args) of
         Success conf -> handleConf conf
-        Failure _ -> exitWith (ExitFailure 84)
-        CompletionInvoked _ -> exitWith (ExitFailure 84)
+        Failure _ -> exitError
+        CompletionInvoked _ -> exitError
 

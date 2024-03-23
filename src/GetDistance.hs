@@ -11,11 +11,13 @@ module GetDistance (
     position,
     closest,
     closestIdx,
-    furthest
+    furthest,
+    furthestInfo
 ) where
 
 import Data.List (elemIndex)
 import KMeansData.TrupleData
+import Parsing (Info)
 
 getDistances :: [Truple] -> Truple -> [Float]
 getDistances [] _ = []
@@ -47,4 +49,13 @@ furthest :: [Truple] -> Truple -> Truple
 furthest xs x = xs !! position (maximum l) l
     where
         l = (getDistances xs x)
+    
+getDistancesInfo :: [Info] -> Truple -> [Float]
+getDistancesInfo [] _ = []
+getDistancesInfo (x:xs) what =
+    (distance (snd x) what) : (getDistancesInfo xs what)
+
+furthestInfo :: [Info] -> Truple -> Truple
+furthestInfo xs x = snd (xs !! position (maximum l) l)
+    where l = (getDistancesInfo xs x)
 

@@ -5,11 +5,12 @@
 -- KMeansAlgorithm
 -}
 
-module KMeansAlgorithm (executeKMeans) where
+module KMeansAlgorithm (executeKMeans,Group) where
 
 import GetDistance
 import KMeansData.TrupleData
 import DisplayOutput
+import Parsing (Info)
 
 type Group = [(Truple, [Truple])]
 
@@ -43,19 +44,18 @@ pushInGroup (centGrp:list) idx t =
     centGrp:(pushInGroup list (idx - 1) t)
 pushInGroup _ _ _ = []
 
-manageAlgo :: Group -> [Truple] -> [Truple] -> Group
+manageAlgo :: Group -> [Info] -> [Truple] -> Group
 manageAlgo grp [] _ = grp
-manageAlgo grp (t:list) cen =
+manageAlgo grp ((_,t):list) cen =
     manageAlgo (pushInGroup grp (closestIdx cen t) t) list cen
 
-executeKMeans :: [Truple] -> [Truple] -> Float -> IO()
-executeKMeans cen values l = return (result) >>= (\group ->
-        newGeneration group)
-    where
-        result = manageAlgo (initGroup cen) values cen
-        newGeneration group
-            | (checkConvergenceLimit cen (newCen group) l) =
-                (displayOutput group)
-            | cen == (newCen group) = (displayOutput group)
-            | otherwise = executeKMeans (newCen group) values l
-        newCen group = getNewCentroids group
+executeKMeans :: [Truple] -> [Info] -> Float -> IO()
+executeKMeans cen values l = return (result) >>=
+    (\group -> newGeneration group)
+    where   result = manageAlgo (initGroup cen) values cen
+            newGeneration group
+                | (checkConvergenceLimit cen (newCen group) l) =
+                    (displayOutput group)
+                | cen == (newCen group) = (displayOutput group)
+                | otherwise = executeKMeans (newCen group) values l
+            newCen group = getNewCentroids group

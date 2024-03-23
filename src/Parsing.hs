@@ -5,14 +5,14 @@
 -- Parsing
 -}
 
-module Parsing(getImageParsing) where
+module Parsing(getImageParsing,Info) where
 
     import System.IO()
     import Control.Exception(try)
     import KMeansData.TrupleData(Truple)
     import Data.Maybe(listToMaybe)
 
-    type Information = ((Int,Int),Truple)
+    type Info = ((Int,Int),Truple)
 
     parseFile :: String -> IO (Maybe [String])
     parseFile filename =
@@ -39,7 +39,7 @@ module Parsing(getImageParsing) where
             _ -> Nothing
     myReadTruple _ = Nothing
 
-    getInfo :: String -> Maybe Information
+    getInfo :: String -> Maybe Info
     getInfo [] = Nothing
     getInfo s   | (length w) == 2 = case myReadTuple (w!!0) of
                     Just a -> case myReadTruple (w!!1) of
@@ -49,17 +49,17 @@ module Parsing(getImageParsing) where
                 | otherwise = Nothing
                 where w = words s
     
-    getInformations :: [String] -> Maybe [Information]
-    getInformations [] = Just []
-    getInformations (x:xs) = case getInfo x of
-        Just info -> case getInformations xs of
+    getAllInfos :: [String] -> Maybe [Info]
+    getAllInfos [] = Just []
+    getAllInfos (x:xs) = case getInfo x of
+        Just info -> case getAllInfos xs of
             Just rest -> Just (info:rest)
             Nothing -> Nothing
         Nothing -> Nothing
 
-    getImageParsing :: String -> IO (Maybe [Information])
+    getImageParsing :: String -> IO (Maybe [Info])
     getImageParsing filename = parseFile filename >>=
         return . (\e -> case e of
-            Just x -> getInformations x
+            Just x -> getAllInfos x
             Nothing -> Nothing
         )
