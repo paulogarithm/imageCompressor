@@ -20,11 +20,8 @@ addTruple :: Truple -> Truple -> Truple
 addTruple (a,b,c) (d,e,f) = (a+d,b+e,c+f)
 
 trupleTotal :: [Truple] -> Truple
-trupleTotal [] = (0,0,0)
+trupleTotal [] = (0, 0, 0)
 trupleTotal (tr:xs) = addTruple tr (trupleTotal xs)
-
--- trupleInt :: Truple -> (Int,Int,Int)
--- trupleInt (a,b,c) = (round a,round b,round c)
 
 tra :: Truple -> Int
 tra (a,_,_) = a
@@ -35,5 +32,4 @@ trb (_,b,_) = b
 trc :: Truple -> Int
 trc (_,_,c) = c
 
--- data Truple = Truple Float Float Float deriving (Show, Ord, Eq)
 type Truple = (Int,Int,Int)
