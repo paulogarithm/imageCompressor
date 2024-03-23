@@ -5,43 +5,21 @@
 -- KMeansAlgorithm
 -}
 
-module KMeansAlgorithm (
-    manageAlgo,
-    checkConvergenceLimit
-) where
+module KMeansAlgorithm (executeKMeans) where
 
-import KMeansData.TrupleData
-import KMeansData.GetConfArgs
 import GetDistance
+import KMeansData.TrupleData
+import DisplayOutput
 
-import GetCentroids
+type Group = [(Truple, [Truple])]
 
-assignCluster :: [Truple] -> [Truple] -> [(Truple, Int)]
-assignCluster [] _ = []
-assignCluster (x:xs) t = (x, (position (closest t x) t)) : (assignCluster xs t)
-
-showMePos :: (Ord a) => (Num a) => [(a,Int)] -> [Int]
-showMePos [] = []
-showMePos ((_,x):xs) = x : (showMePos xs)
-
-add :: (Num a) => a -> (a, b) -> (a, b)
-add n (a, b) = (a + n, b)
-
--- _clusterNTotal :: (Integral a) => [(a,Int)] -> Int -> a -> (a,a) -- ???
--- _clusterNTotal [] cl nn = (0,nn)
--- _clusterNTotal ((x,c):xs) cl nn
---     | (c == cl) = add x (next (nn + 1))
---     | otherwise = next nn 
---         where
---             next n = _clusterNTotal xs cl n
-
--- clusterNTotal :: [(Truple, Int)] -> Int -> (Truple, a) -- ???
--- clusterNTotal a b = _clusterNTotal a b 0
-
--- clusterMeans :: [(Truple, Int)] -> Int -> [Truple]
--- clusterMeans _ 0 = []
--- clusterMeans t len = (clusterMeans t (len - 1)) ++ [div (fst foo) (snd foo)]
---     where foo = (clusterNTotal t (len - 1))
+trupleAverage :: [Truple] -> Truple -> Truple
+trupleAverage [] what = what
+trupleAverage t _ =
+    ((tra total) `div` len, (trb total) `div` len, (trc total) `div` len)
+    where
+        total = trupleTotal t
+        len = length t
 
 checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
 checkConvergenceLimit [] _ _ = True
@@ -51,12 +29,33 @@ checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
     where
         convergeDistance = (distance newCentroid centroid)
 
-handleKMeans :: [Truple] -> [Truple] -> Bool -> IO ()
-handleKMeans _ _ True = return ()
-handleKMeans list centroids False =
-    print (assignCluster list centroids)
+initGroup :: [Truple] -> Group
+initGroup [] = []
+initGroup (x:xs) = (x,[]):(initGroup xs)
 
-manageAlgo :: [Truple] -> Conf -> IO ()
-manageAlgo list (Conf nbCluster _ _) =
-    (initCentroids list nbCluster) >>= (\centroids ->
-        handleKMeans list centroids False)
+getNewCentroids :: Group -> [Truple]
+getNewCentroids [] = []
+getNewCentroids ((w, t):xs) = (trupleAverage t w):(getNewCentroids xs)
+
+pushInGroup :: Group -> Int -> Truple -> Group
+pushInGroup ((cen, truples):list) 0 t = ((cen, (t:truples)):list)
+pushInGroup (centGrp:list) idx t =
+    centGrp:(pushInGroup list (idx - 1) t)
+pushInGroup _ _ _ = []
+
+manageAlgo :: Group -> [Truple] -> [Truple] -> Group
+manageAlgo grp [] _ = grp
+manageAlgo grp (t:list) cen =
+    manageAlgo (pushInGroup grp (closestIdx cen t) t) list cen
+
+executeKMeans :: [Truple] -> [Truple] -> Float -> IO()
+executeKMeans cen values l = return (result) >>= (\group ->
+        newGeneration group)
+    where
+        result = manageAlgo (initGroup cen) values cen
+        newGeneration group
+            | (checkConvergenceLimit cen (newCen group) l) =
+                (displayOutput group)
+            | cen == (newCen group) = (displayOutput group)
+            | otherwise = executeKMeans (newCen group) values l
+        newCen group = getNewCentroids group

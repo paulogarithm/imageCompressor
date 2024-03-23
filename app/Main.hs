@@ -11,29 +11,31 @@ module Main (main) where
 
 import System.Environment
 import System.Exit
-import System.Random
-import Data.List (elemIndex)
 
 import KMeansData.GetConfArgs
 import KMeansData.TrupleData
 import KMeansAlgorithm
 import Options.Applicative
+import GetCentroids
 
 b :: [Truple]
 b = [
-    (Truple 1.1 2.2 3.3),
-    (Truple 9.1 2.2 45.3),
-    (Truple 18.1 29.2 22.3),
-    (Truple 38.1 0.2 34.3),
-    (Truple 20.1 15.2 35.3),
-    (Truple 12.1 20.2 15.0),
-    (Truple 5.0 4.0 3.0)]
+    (98,99,233),
+    (88,77,211),
+    (45,12,167),
+    (33,16,94),
+    (78,8,9),
+    (20,27,67),
+    (1,56,37),
+    (66,20,26),
+    (15,89,40)]
 
 handleConf :: Conf -> IO ()
-handleConf (Conf nbCluster convergeLimit fileName)
-    | nbCluster <= 0 = exitWith (ExitFailure 84)
-    | convergeLimit <= 0 = exitWith (ExitFailure 84)
-    | otherwise = manageAlgo b (Conf nbCluster convergeLimit fileName)
+handleConf (Conf cClusters cConvLimit _)
+    | cClusters <= 0 || cClusters >= length b = exitWith (ExitFailure 84)
+    | cConvLimit <= 0 = exitWith (ExitFailure 84)
+    | otherwise = (initCentroids b cClusters) >>=
+        (\v -> executeKMeans v b cConvLimit)
 
 main :: IO ()
 main = do
@@ -43,11 +45,3 @@ main = do
         Failure _ -> exitWith (ExitFailure 84)
         CompletionInvoked _ -> exitWith (ExitFailure 84)
 
-displayDouble :: Double -> IO()
-displayDouble n = print n
-
-displayConf :: Conf -> IO()
-displayConf (Conf nbCluster convergeLimit fileName) =
-    print nbCluster >>
-        displayDouble convergeLimit >>
-            putStrLn fileName
