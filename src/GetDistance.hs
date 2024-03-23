@@ -10,6 +10,7 @@ module GetDistance (
     distance,
     position,
     closest,
+    closestIdx,
     furthest
 ) where
 
@@ -34,6 +35,11 @@ position x xs = case elemIndex x xs of
 
 closest :: [Truple] -> Truple -> Truple
 closest xs x = xs !! position (minimum l) l
+    where
+        l = (getDistances xs x)
+
+closestIdx :: [Truple] -> Truple -> Int
+closestIdx xs x = position (minimum l) l
     where
         l = (getDistances xs x)
 

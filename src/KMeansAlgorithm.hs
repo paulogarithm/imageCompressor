@@ -8,21 +8,18 @@
 module KMeansAlgorithm (executeKMeans) where
 
 import GetDistance
-import System.Exit
 import KMeansData.TrupleData
+import DisplayOutput
 
-type Group = [(Truple,[Truple])]
-
-assignCluster :: [Truple] -> [Truple] -> [(Truple, Int)]
-assignCluster [] _ = []
-assignCluster (x:xs) t = (x, (position (closest t x) t)) : (assignCluster xs t)
+type Group = [(Truple, [Truple])]
 
 trupleAverage :: [Truple] -> Truple -> Truple
 trupleAverage [] what = what
 trupleAverage t _ =
-    ((tra total)`div`len, (tra total)`div`len, (tra total)`div`len)
-    where   total = trupleTotal t
-            len = length t
+    ((tra total) `div` len, (trb total) `div` len, (trc total) `div` len)
+    where
+        total = trupleTotal t
+        len = length t
 
 checkConvergenceLimit :: [Truple] -> [Truple] -> Float -> Bool
 checkConvergenceLimit [] _ _ = True
@@ -32,50 +29,33 @@ checkConvergenceLimit (newCentroid:list1) (centroid:list2) limit =
     where
         convergeDistance = (distance newCentroid centroid)
 
-initGrouping :: [Truple] -> Group
-initGrouping [] = []
-initGrouping (x:xs) = (x,[]):(initGrouping xs)
-
-pushInGroup :: Group -> Truple -> Truple -> Group
-pushInGroup [] _ _ = []
-pushInGroup ((pk,t):xs) k v | (k == pk) = ((pk,v:t):xs)
-                            | otherwise = ((pk,t):(pushInGroup xs k v))
-
-setGroup :: [(Truple,Int)] -> [Truple] -> Group
-setGroup [] cen = initGrouping cen
-setGroup ((what,index):xs) cen = pushInGroup object (cen!!index) what
-    where object = setGroup xs cen
+initGroup :: [Truple] -> Group
+initGroup [] = []
+initGroup (x:xs) = (x,[]):(initGroup xs)
 
 getNewCentroids :: Group -> [Truple]
 getNewCentroids [] = []
-getNewCentroids ((w,t):xs) = (trupleAverage t w):(getNewCentroids xs)
+getNewCentroids ((w, t):xs) = (trupleAverage t w):(getNewCentroids xs)
 
--- Args: (valeurs) -> (centroids) -> (previousConvergence) => [Truple,[Truple]]
--- Optimisable
-manageAlgo :: [Truple] -> [Truple] -> Float -> Maybe Group
-manageAlgo list cen _ = Just (setGroup (assignCluster list cen) cen)
+pushInGroup :: Group -> Int -> Truple -> Group
+pushInGroup ((cen, truples):list) 0 t = ((cen, (t:truples)):list)
+pushInGroup (centGrp:list) idx t =
+    centGrp:(pushInGroup list (idx - 1) t)
+pushInGroup _ _ _ = []
 
-displayResult :: Group -> IO()
-displayResult [] = return ()
-displayResult ((k,v):xs) = return ()
-    >> putStr "key: "
-    >> print k
-    >> putStr "values: "
-    >> print v
-    >> displayResult xs
+manageAlgo :: Group -> [Truple] -> [Truple] -> Group
+manageAlgo grp [] _ = grp
+manageAlgo grp (t:list) cen =
+    manageAlgo (pushInGroup grp (closestIdx cen t) t) list cen
 
-executeKMeans :: [Truple] -> [Truple] -> Int -> Float -> IO()
-executeKMeans cen values n l = case result of
-    Just group -> return ()
-        >> putStr "starter centroids: " >> print cen
-        >> displayResult group
-        >> putStr "new centroids: " >> print (getNewCentroids group)
-        >> newGeneration
-        where newGeneration
-                | (checkConvergenceLimit cen newCen l) = exitSuccess
-                | n <= 0 = exitSuccess
-                | cen == newCen = exitSuccess
-                | otherwise = executeKMeans newCen values (n - 1) l
-                where newCen = getNewCentroids group
-    Nothing -> exitWith (ExitFailure 84)
-    where result = manageAlgo values cen 0
+executeKMeans :: [Truple] -> [Truple] -> Float -> IO()
+executeKMeans cen values l = return (result) >>= (\group ->
+        newGeneration group)
+    where
+        result = manageAlgo (initGroup cen) values cen
+        newGeneration group
+            | (checkConvergenceLimit cen (newCen group) l) =
+                (displayOutput group)
+            | cen == (newCen group) = (displayOutput group)
+            | otherwise = executeKMeans (newCen group) values l
+        newCen group = getNewCentroids group

@@ -9,6 +9,7 @@ module DisplayOutput (
     displayOutput
 ) where
 
+import System.Exit
 import KMeansData.TrupleData
 
 _displayCentroids :: Truple -> IO ()
@@ -23,7 +24,7 @@ _displayPoints (t:list) =
             (_displayPoints list)
 
 displayOutput :: [(Truple, [Truple])] -> IO ()
-displayOutput [] = return ()
+displayOutput [] = exitSuccess
 displayOutput (x:xs) =
     _displayCentroids (fst x) >>
         (putStrLn "-") >>
