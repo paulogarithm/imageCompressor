@@ -19,18 +19,6 @@ import Options.Applicative
 import GetCentroids
 import Parsing(getImageParsing,Info)
 
-b :: [Truple]
-b = [
-    (98,99,233),
-    (88,77,211),
-    (45,12,167),
-    (33,16,94),
-    (78,8,9),
-    (20,27,67),
-    (1,56,37),
-    (66,20,26),
-    (15,89,40)]
-
 exitError :: IO()
 exitError = exitWith (ExitFailure 84)
 
