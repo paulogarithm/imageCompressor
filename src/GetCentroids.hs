@@ -13,19 +13,20 @@ import KMeansData.TrupleData
 import GetDistance
 
 import System.Random
+import Parsing(Info)
 
-getFirstCentroid :: [Truple] -> IO Truple
+getFirstCentroid :: [Info] -> IO Truple
 getFirstCentroid list = (randomRIO (1, (length list) - 1))
-    >>= return . (\idx -> (list !! idx))
+    >>= return . (\idx -> (snd (list !! idx)))
 
-getCentroids :: Truple -> [Truple] -> Int -> [Truple]
+getCentroids :: Truple -> [Info] -> Int -> [Truple]
 getCentroids _ _ 0 = []
 getCentroids centroid list nbCluster =
-    centroid : (getCentroids (furthest newList centroid) newList newCluster)
+    centroid : (getCentroids (furthestInfo newList centroid) newList newCluster)
     where
-        newList = (filter (\x -> x /= centroid) list)
+        newList = (filter (\x -> (snd x) /= centroid) list)
         newCluster = (nbCluster - 1)
 
-initCentroids :: [Truple] -> Int -> IO [Truple]
+initCentroids :: [Info] -> Int -> IO [Truple]
 initCentroids l n = (getFirstCentroid l) >>= return . (\c ->
     getCentroids c l (n))
