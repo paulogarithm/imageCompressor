@@ -11,19 +11,22 @@ module DisplayOutput (
 
 import System.Exit
 import KMeansData.TrupleData
+import Parsing(Info)
 
 _displayCentroids :: Truple -> IO ()
 _displayCentroids truple =
     (putStrLn "--") >>
         (print truple)
 
-_displayPoints :: [Truple] -> IO ()
+_displayPoints :: [Info] -> IO ()
 _displayPoints [] = return ()
-_displayPoints (t:list) =
-        (print t) >>
-            (_displayPoints list)
+_displayPoints ((p,t):list) = return ()
+        >> putStr (show p)
+        >> putStr " "
+        >> putStrLn (show t)
+        >> (_displayPoints list)
 
-displayOutput :: [(Truple, [Truple])] -> IO ()
+displayOutput :: [(Truple,[Info])] -> IO ()
 displayOutput [] = exitSuccess
 displayOutput (x:xs) =
     _displayCentroids (fst x) >>

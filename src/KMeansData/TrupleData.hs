@@ -10,7 +10,6 @@
 module KMeansData.TrupleData (
     Truple,
     addTruple,
-    trupleTotal,
     tra,
     trb,
     trc
@@ -18,10 +17,6 @@ module KMeansData.TrupleData (
 
 addTruple :: Truple -> Truple -> Truple
 addTruple (a,b,c) (d,e,f) = (a+d,b+e,c+f)
-
-trupleTotal :: [Truple] -> Truple
-trupleTotal [] = (0, 0, 0)
-trupleTotal (tr:xs) = addTruple tr (trupleTotal xs)
 
 tra :: Truple -> Int
 tra (a,_,_) = a

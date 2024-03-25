@@ -12,9 +12,13 @@ import KMeansData.TrupleData
 import DisplayOutput
 import Parsing (Info)
 
-type Group = [(Truple, [Truple])]
+type Group = [(Truple, [Info])]
 
-trupleAverage :: [Truple] -> Truple -> Truple
+trupleTotal :: [Info] -> Truple
+trupleTotal [] = (0, 0, 0)
+trupleTotal ((_,t):xs) = addTruple t (trupleTotal xs)
+
+trupleAverage :: [Info] -> Truple -> Truple
 trupleAverage [] what = what
 trupleAverage t _ =
     ((tra total) `div` len, (trb total) `div` len, (trc total) `div` len)
@@ -36,18 +40,18 @@ initGroup (x:xs) = (x,[]):(initGroup xs)
 
 getNewCentroids :: Group -> [Truple]
 getNewCentroids [] = []
-getNewCentroids ((w, t):xs) = (trupleAverage t w):(getNewCentroids xs)
+getNewCentroids ((w,i):xs) = (trupleAverage i w):(getNewCentroids xs)
 
-pushInGroup :: Group -> Int -> Truple -> Group
-pushInGroup ((cen, truples):list) 0 t = ((cen, (t:truples)):list)
-pushInGroup (centGrp:list) idx t =
-    centGrp:(pushInGroup list (idx - 1) t)
+pushInGroup :: Group -> Int -> Info -> Group
+pushInGroup ((cen,infos):list) 0 info = ((cen, (info:infos)):list)
+pushInGroup (centGrp:list) idx info =
+    centGrp:(pushInGroup list (idx - 1) info)
 pushInGroup _ _ _ = []
 
 manageAlgo :: Group -> [Info] -> [Truple] -> Group
 manageAlgo grp [] _ = grp
-manageAlgo grp ((_,t):list) cen =
-    manageAlgo (pushInGroup grp (closestIdx cen t) t) list cen
+manageAlgo grp ((p,t):list) cen =
+    manageAlgo (pushInGroup grp (closestIdx cen t) (p,t)) list cen
 
 executeKMeans :: [Truple] -> [Info] -> Float -> IO()
 executeKMeans cen values l = return (result) >>=
