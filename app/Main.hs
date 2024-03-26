@@ -24,7 +24,7 @@ exitError = exitWith (ExitFailure 84)
 startKMeans :: Conf -> [Info] -> IO()
 startKMeans (Conf cClusters cConvLimit _) infos
     | (cClusters + 1) >= length infos = exitError
-    | otherwise = print cClusters >> print (length infos) >> (initCentroids infos cClusters) >>= (\cen ->
+    | otherwise = (initCentroids infos cClusters) >>= (\cen ->
         executeKMeans cen infos cConvLimit)
 
 handleConf :: Conf -> IO ()
