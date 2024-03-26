@@ -3,3 +3,5 @@
 imageCompressor
 coding-style-reports.log
 bin/
+*.jpg
+*.sh

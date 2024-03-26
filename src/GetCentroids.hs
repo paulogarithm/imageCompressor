@@ -22,7 +22,7 @@ getFirstCentroid list = (randomRIO (1, (length list) - 1))
 getCentroids :: Truple -> [Info] -> Int -> [Truple]
 getCentroids _ _ 0 = []
 getCentroids centroid list nbCluster =
-    centroid : (getCentroids (furthestInfo newList centroid) newList newCluster)
+    centroid:(getCentroids (furthestInfo newList centroid) newList newCluster)
     where
         newList = (filter (\x -> (snd x) /= centroid) list)
         newCluster = (nbCluster - 1)
