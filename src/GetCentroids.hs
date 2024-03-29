@@ -16,7 +16,7 @@ import System.Random
 import Parsing(Info)
 
 getFirstCentroid :: [Info] -> IO Truple
-getFirstCentroid list = (randomRIO (1, (length list) - 1))
+getFirstCentroid list = (randomRIO (0, (length list) - 1))
     >>= return . (\idx -> (snd (list !! idx)))
 
 getCentroids :: Truple -> [Info] -> Int -> [Truple]
