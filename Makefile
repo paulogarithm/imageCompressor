@@ -24,4 +24,9 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 
+tests_run:
+	stack test
+
 re:	fclean all
+
+.PHONY: re clean fclean all tests_run
